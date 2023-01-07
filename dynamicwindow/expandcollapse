@@ -1,0 +1,18 @@
+if event.source.VisibleTag == 0:
+	if event.source.parent.DualVFD == True:
+		window = system.gui.getParentWindow(event)
+		window.size = (1135,695)
+		event.source.VisibleTag = 1
+	if event.source.parent.DualVFD == False:
+		window = system.gui.getParentWindow(event)
+		window.size = (935,695)
+		event.source.VisibleTag = 1
+else:
+	if event.source.parent.DualVFD == True:
+		window = system.gui.getParentWindow(event)
+		window.size = (410,695)
+		event.source.VisibleTag = 0
+	if event.source.parent.DualVFD == False:
+		window = system.gui.getParentWindow(event)
+		window.size = (935,695)
+		event.source.VisibleTag = 1
