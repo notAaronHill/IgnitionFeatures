@@ -1,0 +1,62 @@
+if event.source.init == True:
+	if event.source.DualVFD == True:
+		system.gui.transform(event.source.getComponent('Collapse Expand Button'), newX=235, newY=645)
+		system.gui.transform(event.source.getComponent('Close Popup Button'), newX=30, newY=645)
+	if event.source.DualVFD == False:
+		system.gui.transform(event.source.getComponent('Collapse Expand Button'), newX=30, newY=660)
+		system.gui.transform(event.source.getComponent('Close Popup Button'), newX=30, newY=630)
+	#sets new values for the easy chart component. 
+	#allows for dynamic indirect binding on the pens.
+	tagpens = event.source.getComponent('Expand').getComponent('Trends').getComponent('Easy Chart').tagPens
+	
+	rowind = 0
+	
+	x1 = event.source.TagId1
+	x2 = event.source.TagId2
+	
+	g1 = " Process Values"
+	g2 = " Setpoints"
+	g3 = " Status"
+	
+	while rowind != tagpens.getRowCount():
+		if tagpens.getValueAt(rowind, "GROUP_NAME") == "tagID1 pv":
+			newgroupname = x1 + g1
+			tagpens = system.dataset.setValue(tagpens, rowind, "GROUP_NAME", newgroupname)
+		if tagpens.getValueAt(rowind, "GROUP_NAME") == "tagID2 pv":
+			newgroupname = x2 + g1
+			tagpens = system.dataset.setValue(tagpens, rowind, "GROUP_NAME", newgroupname)
+		if tagpens.getValueAt(rowind, "GROUP_NAME") == "tagID1 sp":
+			newgroupname = x1 + g2
+			tagpens = system.dataset.setValue(tagpens, rowind, "GROUP_NAME", newgroupname)
+		if tagpens.getValueAt(rowind, "GROUP_NAME") == "tagID2 sp":
+			newgroupname = x2+ g2
+			tagpens = system.dataset.setValue(tagpens, rowind, "GROUP_NAME", newgroupname)
+		if tagpens.getValueAt(rowind, "GROUP_NAME") == "tagID1 st":
+			newgroupname = x1 + g3
+			tagpens = system.dataset.setValue(tagpens, rowind, "GROUP_NAME", newgroupname)	
+		if tagpens.getValueAt(rowind, "GROUP_NAME") == "tagID2 st":
+			newgroupname = x2 + g3
+			tagpens = system.dataset.setValue(tagpens, rowind, "GROUP_NAME", newgroupname)
+			
+		tagpath = tagpens.getValueAt(rowind, "TAG_PATH")
+		pt1 = (tagpath[:53])
+		pt2 = (tagpath[53:59])
+		pt3 = (tagpath[59:])
+		if event.source.DualVFD == False:
+			if pt2 == "tagid2":
+				tagpens = system.dataset.setValue(tagpens, rowind, "USER_SELECTABLE", False)
+		if pt2 == "tagid1":
+			newtagpath = pt1 + (x1.lower()) + pt3
+			tagpens = system.dataset.setValue(tagpens, rowind, "TAG_PATH", newtagpath)
+		if pt2 == "tagid2":
+				newtagpath = pt1 + (x2.lower()) + pt3
+				tagpens = system.dataset.setValue(tagpens, rowind, "TAG_PATH", newtagpath)
+		rowind = rowind + 1
+	
+	if rowind == tagpens.getRowCount():
+		if event.source.getComponent('Collapse Expand Button').VisibleTag == 1:
+			button = event.source.getComponent('Collapse Expand Button')
+			event.source.getComponent('Expand').getComponent('Trends').getComponent('Easy Chart').tagPens = tagpens
+			button.doClick()
+		else:
+			event.source.init = False
